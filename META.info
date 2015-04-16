@@ -2,6 +2,9 @@
     "name" : "OO::Actors",
     "version" : "*",
     "description" : "Basic Actor model support. A work in progress.",
+    "provides" : {
+        "OO::Actors" : "lib/OO/Actors.pm"
+    },
     "depends" : [ ],
     "repo-type" : "git",
     "source-url" : "git://github.com/jnthn/oo-actors.git"
