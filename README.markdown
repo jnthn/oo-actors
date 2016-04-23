@@ -8,7 +8,7 @@ rich one. For now, it may be enough to be useful for what you need.
 The `OO::Actors` module provides an `actor` declarator. Beyond that, it's very
 much like writing a normal class.
 
-    use Actors;
+    use OO::Actors;
 
     enum Severity <Fatal Error Warning Notice>;
 
