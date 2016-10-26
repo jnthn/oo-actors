@@ -1,4 +1,5 @@
 {
+    "perl" : "6.*",
     "name" : "OO::Actors",
     "version" : "*",
     "description" : "Basic Actor model support. A work in progress.",
