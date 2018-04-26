@@ -24,28 +24,43 @@ role Actor {
     has $!lock    = Lock.new;
 
     method !post($method, $capture) {
-        my $promise = Promise.new;
-        my $vow     = $promise.vow;
+        # avoids promises on self-sends
+        if ($!process && $*THREAD.id == $!process.id) {
+            return $method(self, |$capture);
+        }
+        else {
+            try {
+                my $promise = Promise.new;
+                my $vow     = $promise.vow;
 
-        $!mailbox.send(task($vow, self, $method, $capture));
+                $!mailbox.send(task($vow, self, $method, $capture));
 
-        $!lock.protect({
-            $!process = spawn($!mailbox) unless $!process;
-        });
+                $!lock.protect({
+                    $!process = spawn($!mailbox) unless $!process;
+                });
 
-        return $promise;
+                return $promise;
+
+                CATCH {
+                    $vow.break($_);
+                    return $promise;
+                }
+            }
+        }
     }
 
     submethod DESTROY {
         $!lock.protect({
             $!mailbox.close;
-            $!process.finish;
+
+            # couldn't join on self-send
+            $!process.finish unless $*THREAD.id == $!process.id;
         })
     }
 }
 
 class MetamodelX::ActorHOW is Metamodel::ClassHOW {
-    my %bypass = :new, :bless, :BUILDALL, :BUILD, 'dispatch:<!>' => True;
+    my %bypass = :new, :bless, :BUILDALL, :BUILD, :DESTROY, 'dispatch:<!>' => True;
 
     method find_method(Mu \obj, $name, |) {
         my $method = callsame;
