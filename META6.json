@@ -4,7 +4,7 @@
     "version" : "*",
     "description" : "Basic Actor model support. A work in progress.",
     "provides" : {
-        "OO::Actors" : "lib/OO/Actors.pm"
+        "OO::Actors" : "lib/OO/Actors.pm6"
     },
     "depends" : [ ],
     "repo-type" : "git",
