@@ -64,7 +64,7 @@ role Actor {
             $!mailbox.close;
 
             # couldn't join on self-send
-            $!process.finish unless $*THREAD.id == $!process.id;
+            $!process.finish if $!process && $*THREAD.id != $!process.id;
         })
     }
 }

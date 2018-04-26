@@ -11,7 +11,7 @@ actor Bomb {
             my $first  = self.new(level => $.level - 1).fork();
             my $second = self.new(level => $.level - 2).fork();
 
-            return [+] await($first, $second);
+            return $first.result() + $second.result();
         }
         else {
             return $.level;
@@ -23,4 +23,4 @@ my $initial-bomb = Bomb.new(level => 9);
 
 my $promise = $initial-bomb.fork;
 
-is-approx (await $promise), 34, "Nested chain of actors spawned successfully"
+is (await $promise), 34, "Nested chain of actors spawned successfully"

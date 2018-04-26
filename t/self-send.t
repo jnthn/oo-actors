@@ -1,7 +1,7 @@
 use OO::Actors;
 use Test;
 
-plan 1;
+plan 2;
 
 actor Example {
     method greet($name) { "Hello, $name!" }
@@ -21,4 +21,4 @@ my $example = Example.new;
 
 isa-ok $example.greet("World"), Promise, "External sends are asynchronous calls";
 
-$example.test-with("Absurd World");
+$example.test-with("Absurd World").result;
