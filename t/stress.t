@@ -19,6 +19,12 @@ actor Bomb {
     }
 }
 
+unless $*KERNEL ~~ 'linux' {
+    skip-rest "Stress tests outside the GNU/Linux OS are somehow slow.";
+
+    exit;
+}
+
 my $initial-bomb = Bomb.new(level => 9);
 
 my $promise = $initial-bomb.fork;
