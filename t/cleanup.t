@@ -24,4 +24,4 @@ is (await $cell.get), "Hello, World!", "Retrieved correct value";
 
 $cell.DESTROY;
 
-dies-ok { await $cell.get }, "Actor was properly destroyed";
+throws-like { await $cell.get }, Actor::Killed, "Actor was properly destroyed";

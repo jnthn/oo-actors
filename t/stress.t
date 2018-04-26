@@ -8,8 +8,8 @@ actor Bomb {
 
     method fork {
         if $.level > 1 {
-            my $first  = self.new(level => $.level - 1).fork;
-            my $second = self.new(level => $.level - 2).fork;
+            my $first  = self.new(level => $.level - 1).fork();
+            my $second = self.new(level => $.level - 2).fork();
 
             return [+] await($first, $second);
         }

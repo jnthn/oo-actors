@@ -1,3 +1,11 @@
+class Actor::Killed is Exception {
+    has $.reason;
+
+    method message ( ) {
+        "Actor killed due: " ~ $.reason.Str;
+    }
+}
+
 sub task($vow, $receiver, $method, $capture) {
     sub {
         $vow.keep($method($receiver, |$capture));
@@ -42,7 +50,9 @@ role Actor {
                 return $promise;
 
                 CATCH {
-                    $vow.break($_);
+                    my $error = Actor::Killed.new(reason => $_);
+
+                    $vow.break($error);
                     return $promise;
                 }
             }

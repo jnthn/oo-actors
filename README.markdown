@@ -38,6 +38,11 @@ the method name and arguments into a queue. Note that this means you'd better
 not pass things and then mutate them! Methods are run in the thread pool, one
 call at a time.
 
+On the other side, self-sends (i.e, internal method calls) are synchronous. It's
+due to avoid some possible problems such as circular dependencies. So, whenever
+you call something like `self.some-method($x, $y)`, it will run fully strict on
+the same thread of the actor self context.
+
 ## Getting results
 
 Since method calls on an actor are asynchronous, how do you cope with query
