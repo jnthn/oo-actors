@@ -1,46 +1,11 @@
 role Actor {
-    has @!inbox;
-    has $!working = False;
-    has $!inbox-lock = Lock.new;
+    has Lock::Async $!orderer .= new;
 
     method !post($method, $capture) {
-        my $p = Promise.new;
-        my $v = $p.vow;
-        $!inbox-lock.protect({
-            @!inbox.push({
-                $v.keep($method(self, |$capture));
-                CATCH { $v.break($_); #`( And let it escape to supervisor `) }
-            });
-            unless $!working {
-                $*SCHEDULER.cue({ self!process-inbox() });
-            }
+        $!orderer.lock.then({
+            LEAVE $!orderer.unlock;
+            $method(self, |$capture)
         });
-        $p
-    }
-    
-    method !process-inbox() {
-        loop {
-            my $task;
-            $!inbox-lock.protect({
-                unless $!working || @!inbox.elems == 0 {
-                    $!working = True;
-                    $task = @!inbox.shift;
-                }
-            });
-            if $task {
-                my $failure;
-                try $task();
-                if $! {
-                    say "Supervision NYI; $!";
-                    exit(1);
-                }
-                else {
-                    $!inbox-lock.protect({
-                        $!working = False;
-                    });
-                }
-            }
-        }
     }
 }
 
