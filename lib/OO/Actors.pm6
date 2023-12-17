@@ -10,21 +10,21 @@ role Actor {
 }
 
 class MetamodelX::ActorHOW is Metamodel::ClassHOW {
-    my %bypass = :new, :bless, :BUILDALL, :BUILD, 'dispatch:<!>' => True;
-    
-    method find_method(Mu \obj, $name, |) {
+    my %bypass = :new, :bless, :BUILDALL, :BUILD, 'dispatch:<!>' => True, :is-generic;
+
+    method find_method(Mu \obj, $name, | --> Mu) is raw {
         my $method = callsame;
         my $post = self.find_private_method(obj, 'post');
         %bypass{$name} || !$method
             ?? $method
             !!  -> \obj, |capture { $post(obj, $method, capture); }
     }
-    
+
     method compose(Mu \type) {
         self.add_role(type, Actor);
-        self.Metamodel::ClassHOW::compose(type);
+        nextsame
     }
-    
+
     method publish_method_cache(|) { }
 }
 
