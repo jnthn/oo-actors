@@ -1,7 +1,7 @@
 # OO::Actors
 
-A partial Actors implementation, which will hopefully grow up into a fairly
-rich one. For now, it may be enough to be useful for what you need.
+A minimal actors implementation that makes use of Raku's meta-programming
+support to abstract away the ordered asynchronous dispatch.
 
 ## Writing an actor
 
@@ -37,7 +37,7 @@ call at a time.
 ## Getting results
 
 Since method calls on an actor are asynchronous, how do you cope with query
-methods? Each method call on an actor returns a Promise. This can be used to
+methods? Each method call on an actor returns a `Promise`. This can be used to
 get the result;
 
     say await $log.latest-entries(Error);
